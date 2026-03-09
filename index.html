@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You, My Love</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* Root variables will be replaced at runtime based on selected theme */
+    :root {
+      --color-primary: #EFC5D7;
+      --color-secondary: #F8EDEB;
+      --color-accent: #D291BC;
+      --color-text: #4B2E2E;
+      --color-bg: #FFF5F8;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      position: relative;
+      min-height: 100%;
+      overflow-x: hidden;
+    }
+
+    /* Global styles */
+    h1, h2, h3 {
+      font-family: 'Pinyon Script', cursive;
+      font-weight: 400;
+      margin: 0;
+      color: var(--color-primary);
+    }
+
+    h2 {
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .section {
+      position: relative;
+      padding: 6rem 1rem;
+      overflow: hidden;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.3);
+      border-bottom: 1px solid rgba(255,255,255,0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+    }
+
+    nav .logo {
+      font-family: 'Pinyon Script', cursive;
+      font-size: 2rem;
+      color: var(--color-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding-top: 60px; /* account for nav */
+    }
+
+    .hero .date-badge {
+      font-family: 'Jost', sans-serif;
+      letter-spacing: 0.1em;
+      font-size: 0.8rem;
+      background: var(--color-secondary);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      margin-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      color: var(--color-primary);
+    }
+
+    .hero .subtitle {
+      font-style: italic;
+      font-size: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .hero .love-note {
+      margin-top: 2rem;
+      max-width: 600px;
+      padding: 1.5rem 2rem;
+      background: rgba(255,255,255,0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.8);
+      backdrop-filter: blur(15px);
+      font-style: italic;
+      position: relative;
+    }
+    .hero .love-note:before, .hero .love-note:after {
+      content: '❧';
+      position: absolute;
+      font-size: 3rem;
+      color: var(--color-accent);
+      opacity: 0.4;
+    }
+    .hero .love-note:before {
+      top: -1rem;
+      left: -1rem;
+    }
+    .hero .love-note:after {
+      bottom: -1rem;
+      right: -1rem;
+      transform: rotate(180deg);
+    }
+
+    .hero .countdown {
+      margin-top: 2rem;
+      font-family: 'Jost', sans-serif;
+      background: var(--color-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      display: inline-block;
+      font-size: 1rem;
+      color: var(--color-text);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 40px;
+    }
+    .scroll-indicator .line {
+      width: 2px;
+      height: 100%;
+      margin: 0 auto;
+      background: var(--color-accent);
+      animation: scroll-line 2s infinite;
+    }
+    @keyframes scroll-line {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(20px); opacity: 0; }
+    }
+
+    /* Gallery Section */
+    .gallery {
+      padding: 4rem 1rem;
+      column-count: 1;
+      column-gap: 1rem;
+    }
+    @media(min-width: 600px) { .gallery { column-count: 2; } }
+    @media(min-width: 900px) { .gallery { column-count: 3; } }
+    .gallery-item {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      margin: 0 0 1rem;
+      transform: rotate(var(--rotation));
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .gallery-item img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .gallery-item .caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    .gallery-item:hover {
+      transform: rotate(0deg) scale(1.02);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .gallery-item:hover .caption {
+      opacity: 1;
+    }
+
+    /* Timeline Section */
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 0;
+    }
+    .timeline:before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-accent);
+    }
+    .timeline-entry {
+      position: relative;
+      width: 50%;
+      padding: 1rem 2rem;
+      box-sizing: border-box;
+    }
+    .timeline-entry.left {
+      left: 0;
+      text-align: right;
+    }
+    .timeline-entry.right {
+      left: 50%;
+      text-align: left;
+    }
+    .timeline-entry .card {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid rgba(255,255,255,0.8);
+      display: inline-block;
+      max-width: 90%;
+    }
+    .timeline-entry .date {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      margin-bottom: 0.3rem;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .timeline-entry .title {
+      font-style: italic;
+      font-size: 1.4rem;
+      margin: 0;
+    }
+    @media(max-width: 768px) {
+      .timeline:before {
+        left: 0;
+      }
+      .timeline-entry {
+        width: 100%;
+        left: 0 !important;
+        text-align: left;
+        padding-left: 2rem;
+      }
+      .timeline-entry .card {
+        max-width: 100%;
+      }
+    }
+
+    /* Reasons Section */
+    .reasons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 2rem 0;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .reason-card {
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-top: 4px solid var(--color-accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      overflow: hidden;
+    }
+    .reason-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    .reason-card .number {
+      position: absolute;
+      font-family: 'Pinyon Script', cursive;
+      font-size: 4rem;
+      opacity: 0.15;
+      top: 10px;
+      right: 10px;
+      pointer-events: none;
+      color: var(--color-accent);
+    }
+
+    /* Love Letter Section */
+    .letter-card {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+    .letter-card .ornament {
+      font-size: 2rem;
+      color: var(--color-accent);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .letter-card .date {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+      color: var(--color-accent);
+    }
+    .letter-card .body-text {
+      font-style: italic;
+      white-space: pre-line;
+    }
+    .letter-card .signature {
+      margin-top: 2rem;
+      text-align: right;
+      font-family: 'Pinyon Script', cursive;
+      font-size: 1.5rem;
+      color: var(--color-accent);
+    }
+
+    /* Countdown Section */
+    .countdown-section {
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    .countdown-clock {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .countdown-clock .time-box {
+      background: rgba(255,255,255,0.5);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 12px;
+      padding: 1rem;
+      min-width: 70px;
+      backdrop-filter: blur(10px);
+      font-family: 'Jost', sans-serif;
+    }
+    .time-box .value {
+      font-size: 2rem;
+      color: var(--color-primary);
+    }
+    .time-box .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .celebrate-btn {
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      border: none;
+      background: var(--color-accent);
+      color: #fff;
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .celebrate-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    footer .message {
+      font-style: italic;
+      font-size: 1.1rem;
+    }
+    footer .heart {
+      font-size: 2rem;
+      color: var(--color-accent);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Falling petals */
+    .petal {
+      position: fixed;
+      top: -10%;
+      width: 20px;
+      height: 20px;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="%23D291BC"%3E%3Cpath d="M16 3c7 0 13 5 13 12s-6 12-13 12-13-5-13-12S9 3 16 3z"/%3E%3C/svg%3E');
+      background-size: contain;
+      background-repeat: no-repeat;
+      pointer-events: none;
+      opacity: 0.8;
+      z-index: 1;
+      animation-name: fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) translateX(var(--drift));
+      }
+    }
+
+    /* Cursor hearts */
+    .cursor-heart {
+      position: fixed;
+      pointer-events: none;
+      width: 12px;
+      height: 12px;
+      background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 29.6" fill="%23D291BC"%3E%3Cpath d="M23.6,0c-3.4,0-6.4,2.1-7.6,5.1C14.8,2.1,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4 c0,9.1,12.8,17.3,15.2,18.9c0.6,0.4,1.4,0.4,2,0C19.2,25.7,32,17.5,32,8.4C32,3.8,28.2,0,23.6,0z"/%3E%3C/svg%3E');
+      background-size: cover;
+      opacity: 0.7;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      animation: floatUp 1s ease forwards;
+    }
+    @keyframes floatUp {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+      100% { transform: translate(-50%, -200%) scale(0.5); opacity: 0; }
+    }
+
+    /* Noise overlay using simple repeating gradient */
+    .noise-overlay {
+      pointer-events: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 4px);
+      mix-blend-mode: overlay;
+      opacity: 0.3;
+      z-index: 2;
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">My Love</div>
+  </nav>
+  <!-- Petal container will be inserted via JS -->
+  <div class="noise-overlay"></div>
+  <section class="hero section" id="hero">
+    <div class="date-badge" id="hero-date"></div>
+    <h1>For You, My Love</h1>
+    <div class="subtitle" id="hero-subtitle"></div>
+    <div class="love-note" id="love-note"></div>
+    <div class="countdown" id="hero-countdown"></div>
+    <div class="scroll-indicator">
+      <div class="line"></div>
+    </div>
+  </section>
+  <section class="section" id="gallery-section">
+    <h2>A Gallery of Us</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+  <section class="section" id="story-section">
+    <h2>The Story of Us</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+  <section class="section" id="reasons-section">
+    <h2>Why I Love You</h2>
+    <div class="reasons-grid" id="reasons-grid"></div>
+  </section>
+  <section class="section" id="letter-section">
+    <h2>My Letter to You</h2>
+    <div class="letter-card" id="letter-card">
+      <div class="ornament">✦</div>
+      <div class="date" id="letter-date"></div>
+      <div class="body-text" id="letter-body"></div>
+      <div class="signature">Forever Yours</div>
+    </div>
+  </section>
+  <section class="section countdown-section" id="countdown-section">
+    <h2>10th March 🌸</h2>
+    <div id="countdown-content"></div>
+  </section>
+  <footer>
+    <div class="heart">❤</div>
+    <div class="message">Made with every heartbeat, for you — always.</div>
+  </footer>
+
+  <script>
+    /* Seeded random generator */
+    function mulberry32(a) {
+      return function() {
+        let t = a += 0x6D2B79F5;
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      }
+    }
+
+    // Theme palettes
+    const palettes = {
+      'rose-pink': { primary: '#EBA0AC', secondary: '#FFD6DD', accent: '#E2789A', text: '#4A2A33', bg: '#FFF1F4' },
+      'dusty-lavender': { primary: '#BFA5C4', secondary: '#E5D6E8', accent: '#947EAF', text: '#3C2A4D', bg: '#F7F1F9' },
+      'peach-gold': { primary: '#E7A977', secondary: '#FFE3C5', accent: '#D98858', text: '#4D3626', bg: '#FFF8F2' },
+      'sage-cream': { primary: '#B9C8B1', secondary: '#EAF1E6', accent: '#8DA88B', text: '#3A4635', bg: '#F8FBF7' },
+      'mauve-noir': { primary: '#9B6D8D', secondary: '#E8DDE8', accent: '#7D4A74', text: '#2D1E2E', bg: '#F5F0F5' },
+      'blush-coral': { primary: '#E09FA3', secondary: '#FBD6D8', accent: '#D67376', text: '#4A2C2E', bg: '#FFF5F6' }
+    };
+
+    // Content arrays
+    const quotes = [
+      'Your love lights up my world like nothing else.',
+      'In your smile I find my peace and joy.',
+      'Every moment with you is a beautiful memory.',
+      'You are the melody that my heart loves to play.',
+      'I still fall for you every single day.',
+      'Love is not about how many days, weeks or months you\'ve been together, it’s all about how much you love each other every single day.',
+      'My heart is and always will be yours.',
+      'You are my today and all of my tomorrows.',
+      'Meeting you was fate, becoming your friend was a choice, but falling in love with you was beyond my control.',
+      'I love you more than there are stars in the sky.',
+      'Your laughter is my favorite sound.',
+      'You are my treasure, my prize, my one true love.',
+      'Every love story is beautiful, but ours is my favorite.',
+      'You are the reason I look forward to each new day.',
+      'I am most alive when I am with you.',
+      'Your love is the anchor to my soul.',
+      'With you, I am home.',
+      'You are my sunshine on a cloudy day.',
+      'Loving you is like breathing, I just can’t stop.',
+      'You are the dream I never dared to dream, come true.'
+    ];
+
+    const taglines = [
+      'Forever in my heart',
+      'Together is a beautiful place to be',
+      'Our love story begins here',
+      'You are my always',
+      'A love like ours never fades',
+      'You & Me, Always and Forever',
+      'Two hearts, one soul',
+      'Endless love, endless joy',
+      'Our journey of love',
+      'You are my happily ever after',
+      'Moments with you are my favorite',
+      'Love found its way'
+    ];
+
+    const letters = [
+      `My dearest,\n\nFrom the moment I first met you, my life has been filled with colors I never knew existed. Each day with you is a page in the most beautiful love story I could imagine. Your laughter is my favorite melody and your smile my most cherished sight. Thank you for choosing me and for allowing me to love you with all that I am.\n\nForever yours,\n`,
+      `To the love of my life,\n\nWords will never fully capture what you mean to me. You have shown me what real love feels like, and with you, I have found my home. Every memory we create together is etched in my heart. I promise to cherish, support, and adore you for all the days to come.\n\nAlways,\n`,
+      `My love,\n\nThere are no boundaries to how much I love you. You are the sun in my day, the wind in my sky, the waves in my ocean, and the beat in my heart. I am grateful for every smile, every kiss, and every tender word we share. You are my everything.\n\nYours forever,\n`,
+      `Beloved,\n\nI never knew I could love someone so deeply until I met you. Your kindness, your strength, and your beauty inspire me each and every day. I look forward to a lifetime of making memories together and discovering all the wonders of love by your side.\n\nWith endless love,\n`,
+      `Sweetheart,\n\nLife has many surprises, but none as wonderful as you. You have filled my days with laughter and my heart with hope. Thank you for holding my hand through thick and thin and for showing me that true love is not just a fairy tale—it’s our reality.\n\nEver yours,\n`
+    ];
+
+    const reasons = [
+      'Your smile brightens my darkest days.',
+      'You listen to me and truly hear what I say.',
+      'You make me laugh like no one else.',
+      'You challenge me to be better every day.',
+      'Your kindness and compassion inspire me.',
+      'You support my dreams and ambitions.',
+      'You are patient and understanding.',
+      'Your hugs make everything alright.',
+      'You see the best in me when I can’t.',
+      'You love me unconditionally.',
+      'You are my best friend and confidant.',
+      'You make me feel safe and cherished.',
+      'Your passion and drive motivate me.',
+      'You make ordinary moments extraordinary.',
+      'You complete me in every way.'
+    ];
+
+    const captions = [
+      'Moments like this last forever.',
+      'Our love captured in a frame.',
+      'Cherished memories.',
+      'Together is my favorite place to be.',
+      'Never let go of these moments.',
+      'You and me against the world.',
+      'Sweet memories and sweet smiles.',
+      'Every photo tells our story.',
+      'Wherever we are is home.',
+      'Love in every glance.'
+    ];
+
+    const timelineEntries = [
+      { date: 'Jan 15, 2022', title: 'When We First Met', description: 'We crossed paths and our lives changed forever.' },
+      { date: 'Feb 14, 2022', title: 'Our First Date', description: 'A night of laughter, stories, and falling in love.' },
+      { date: 'Mar 10, 2022', title: 'First Kiss', description: 'Under the stars, we sealed our love with a kiss.' },
+      { date: 'Jul 25, 2022', title: 'Our Adventure', description: 'We explored the mountains hand in hand, making unforgettable memories.' },
+      { date: 'Dec 01, 2022', title: 'Moving In Together', description: 'We started a new chapter together in our cozy home.' },
+      { date: 'Jan 01, 2023', title: 'New Year, New Dreams', description: 'We planned our future and promised to chase our dreams together.' }
+    ];
+
+    const animations = ['fade', 'slide-left', 'slide-right', 'zoom', 'rotate-in'];
+
+    // Setup random generator with seed
+    const seed = Date.now();
+    const rng = mulberry32(seed);
+
+    function pickRandom(arr) {
+      return arr[Math.floor(rng() * arr.length)];
+    }
+    function shuffle(arr) {
+      const newArr = arr.slice();
+      for (let i = newArr.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+      }
+      return newArr;
+    }
+
+    // Apply theme
+    function applyTheme() {
+      const keys = Object.keys(palettes);
+      const selected = palettes[keys[Math.floor(rng() * keys.length)]];
+      document.documentElement.style.setProperty('--color-primary', selected.primary);
+      document.documentElement.style.setProperty('--color-secondary', selected.secondary);
+      document.documentElement.style.setProperty('--color-accent', selected.accent);
+      document.documentElement.style.setProperty('--color-text', selected.text);
+      document.documentElement.style.setProperty('--color-bg', selected.bg);
+    }
+
+    // Create falling petals
+    function createPetals() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+      for (let i = 0; i < 20; i++) {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        const delay = rng() * 10;
+        const duration = 5 + rng() * 9; // 5–14 seconds
+        const size = 10 + rng() * 15;
+        const horizontal = (rng() * 2 - 1) * 50; // -50vw to 50vw drift
+        petal.style.left = (rng() * 100) + 'vw';
+        petal.style.animationDuration = duration + 's';
+        petal.style.animationDelay = delay + 's';
+        petal.style.width = size + 'px';
+        petal.style.height = size + 'px';
+        petal.style.setProperty('--drift', horizontal + 'vw');
+        document.body.appendChild(petal);
+      }
+    }
+
+    // Custom cursor hearts
+    function setupCursorHearts() {
+      let throttleTimeout;
+      document.addEventListener('mousemove', (e) => {
+        if (throttleTimeout) return;
+        throttleTimeout = setTimeout(() => {
+          throttleTimeout = null;
+        }, 100);
+        const heart = document.createElement('div');
+        heart.classList.add('cursor-heart');
+        heart.style.left = e.clientX + 'px';
+        heart.style.top = e.clientY + 'px';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1000);
+      });
+    }
+
+    // Populate hero section
+    function populateHero() {
+      const dateBadge = document.getElementById('hero-date');
+      const subtitle = document.getElementById('hero-subtitle');
+      const loveNote = document.getElementById('love-note');
+      const countdownEl = document.getElementById('hero-countdown');
+      const now = new Date();
+      dateBadge.textContent = now.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+      subtitle.textContent = pickRandom(taglines);
+      loveNote.textContent = pickRandom(quotes);
+      // Show countdown days to March 10th
+      const eventDate = new Date(now.getFullYear(), 2, 10); // March 10 (month index 2)
+      let diffDays = Math.ceil((eventDate - now) / (1000 * 60 * 60 * 24));
+      if (diffDays < 0) diffDays = 0;
+      countdownEl.textContent = diffDays + ' day' + (diffDays === 1 ? '' : 's') + ' until March 10th';
+    }
+
+    // Load photos
+    async function loadPhotos() {
+      const gallery = document.getElementById('gallery');
+      let filenames;
+      try {
+        const resp = await fetch('photos/manifest.json');
+        if (resp.ok) {
+          filenames = await resp.json();
+        }
+      } catch (e) {}
+      if (!filenames) {
+        filenames = [];
+        let index = 1;
+        let fail = false;
+        while (!fail) {
+          const extensions = ['jpg','png','webp'];
+          let loaded = false;
+          for (const ext of extensions) {
+            try {
+              const img = new Image();
+              img.src = 'photos/' + index + '.' + ext;
+              await new Promise((resolve, reject) => {
+                img.onload = () => resolve();
+                img.onerror = () => reject();
+              });
+              filenames.push(index + '.' + ext);
+              loaded = true;
+              break;
+            } catch (e) {}
+          }
+          if (!loaded) {
+            fail = true;
+          }
+          index++;
+          // Limit to avoid infinite loop
+          if (index > 100) break;
+        }
+      }
+      // Shuffle
+      const shuffled = shuffle(filenames);
+      shuffled.forEach((file, idx) => {
+        const item = document.createElement('div');
+        const rotation = (-2 + rng()*4).toFixed(2);
+        item.className = 'gallery-item reveal';
+        item.style.setProperty('--rotation', rotation + 'deg');
+        const img = document.createElement('img');
+        img.loading = 'lazy';
+        img.src = 'photos/' + file;
+        const cap = document.createElement('div');
+        cap.className = 'caption';
+        cap.textContent = pickRandom(captions);
+        item.appendChild(img);
+        item.appendChild(cap);
+        gallery.appendChild(item);
+      });
+    }
+
+    // Build timeline
+    function buildTimeline() {
+      const tlContainer = document.getElementById('timeline');
+      const entries = timelineEntries.slice();
+      // Random animation style per visit
+      const anim = pickRandom(animations);
+      entries.forEach((entry, idx) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'timeline-entry reveal ' + (idx % 2 === 0 ? 'left' : 'right');
+        wrapper.style.transitionDelay = (idx * 0.2) + 's';
+        wrapper.dataset.animation = anim;
+        const card = document.createElement('div');
+        card.className = 'card';
+        const dateEl = document.createElement('div');
+        dateEl.className = 'date';
+        dateEl.textContent = entry.date;
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'title';
+        titleEl.textContent = entry.title;
+        const descEl = document.createElement('p');
+        descEl.textContent = entry.description;
+        card.appendChild(dateEl);
+        card.appendChild(titleEl);
+        card.appendChild(descEl);
+        wrapper.appendChild(card);
+        tlContainer.appendChild(wrapper);
+      });
+    }
+
+    // Build reasons grid
+    function buildReasons() {
+      const grid = document.getElementById('reasons-grid');
+      const shuffled = shuffle(reasons).slice(0, 12);
+      shuffled.forEach((reason, idx) => {
+        const card = document.createElement('div');
+        card.className = 'reason-card reveal';
+        card.style.transitionDelay = (idx * 0.1) + 's';
+        const num = document.createElement('div');
+        num.className = 'number';
+        num.textContent = String(idx+1).padStart(2, '0');
+        const text = document.createElement('p');
+        text.textContent = reason;
+        card.appendChild(num);
+        card.appendChild(text);
+        grid.appendChild(card);
+      });
+    }
+
+    // Populate love letter
+    function populateLetter() {
+      const body = document.getElementById('letter-body');
+      const dateEl = document.getElementById('letter-date');
+      body.textContent = pickRandom(letters);
+      const now = new Date();
+      dateEl.textContent = now.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    // Countdown section
+    function setupCountdown() {
+      const container = document.getElementById('countdown-content');
+      const now = new Date();
+      const target = new Date(now.getFullYear(), 2, 10, 0, 0, 0);
+      function update() {
+        const current = new Date();
+        let diff = (target - current) / 1000;
+        if (diff <= 0) {
+          // Birthday!
+          container.innerHTML = `<div class="big-message" style="font-family: 'Pinyon Script', cursive; font-size: 3rem; color: var(--color-primary);">Happy Birthday My Love!</div>`;
+          // Confetti and message cycle
+          celebrate();
+          clearInterval(interval);
+          return;
+        }
+        const days = Math.floor(diff / (3600*24));
+        diff -= days * 3600 * 24;
+        const hours = Math.floor(diff / 3600);
+        diff -= hours * 3600;
+        const mins = Math.floor(diff / 60);
+        const secs = Math.floor(diff % 60);
+        container.innerHTML = `<div class="countdown-clock">
+          <div class="time-box"><div class="value">${days}</div><div class="label">Days</div></div>
+          <div class="time-box"><div class="value">${hours.toString().padStart(2,'0')}</div><div class="label">Hours</div></div>
+          <div class="time-box"><div class="value">${mins.toString().padStart(2,'0')}</div><div class="label">Minutes</div></div>
+          <div class="time-box"><div class="value">${secs.toString().padStart(2,'0')}</div><div class="label">Seconds</div></div>
+        </div>
+        <button class="celebrate-btn" id="celebrate-btn">🎊 Celebrate Her!</button>`;
+        document.getElementById('celebrate-btn').onclick = celebrate;
+      }
+      update();
+      const interval = setInterval(update, 1000);
+    }
+
+    // Confetti explosion
+    function celebrate() {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) return;
+      const computed = getComputedStyle(document.documentElement);
+      const confettiColors = [computed.getPropertyValue('--color-primary'), computed.getPropertyValue('--color-accent'), computed.getPropertyValue('--color-secondary')];
+      const count = 100;
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        const size = Math.random() * 8 + 4;
+        confetti.style.width = size + 'px';
+        confetti.style.height = size + 'px';
+        confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+        confetti.style.position = 'fixed';
+        confetti.style.top = '50%';
+        confetti.style.left = '50%';
+        confetti.style.zIndex = '10000';
+        confetti.style.borderRadius = '50%';
+        confetti.style.transform = 'translate(-50%, -50%)';
+        document.body.appendChild(confetti);
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = Math.random() * 300 + 200;
+        const dx = Math.cos(angle) * distance;
+        const dy = Math.sin(angle) * distance;
+        confetti.animate([
+          { transform: 'translate(-50%, -50%)', opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
+        ], { duration: 1500 + Math.random() * 500, easing: 'ease-out' });
+        setTimeout(() => confetti.remove(), 2000);
+      }
+    }
+
+    // Scroll reveal
+    function setupScrollReveal() {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            el.classList.add('revealed');
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.1 });
+      const revealEls = document.querySelectorAll('.reveal');
+      revealEls.forEach(el => observer.observe(el));
+    }
+
+    // Add reveal animation classes via CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+      .revealed { opacity: 1; transform: translateY(0); }
+      /* Animation variants */
+      .revealed[data-animation="fade"] { }
+      .revealed[data-animation="slide-left"] { transform: translateX(0); }
+      .reveal[data-animation="slide-left"] { transform: translateX(-50px); }
+      .reveal[data-animation="slide-right"] { transform: translateX(50px); }
+      .revealed[data-animation="slide-right"] { transform: translateX(0); }
+      .reveal[data-animation="zoom"] { transform: scale(0.8); }
+      .revealed[data-animation="zoom"] { transform: scale(1); }
+      .reveal[data-animation="rotate-in"] { transform: rotate(-15deg); }
+      .revealed[data-animation="rotate-in"] { transform: rotate(0deg); }
+    `;
+    document.head.appendChild(style);
+
+    // Initialization
+    document.addEventListener('DOMContentLoaded', async () => {
+      applyTheme();
+      populateHero();
+      createPetals();
+      setupCursorHearts();
+      await loadPhotos();
+      buildTimeline();
+      buildReasons();
+      populateLetter();
+      setupCountdown();
+      setupScrollReveal();
+    });
+  </script>
+</body>
+</html>
